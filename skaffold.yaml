@@ -1,0 +1,21 @@
+apiVersion: skaffold/v4beta6
+kind: Config
+metadata:
+  name: auto-provider-id
+build:
+  artifacts:
+    - image: pfenerty/auto-provider-id
+      kaniko:
+        dockerfile: Dockerfile
+  cluster:
+    dockerConfig:
+      secretName: build-secret
+    namespace: skaffold-builds
+    tolerations:
+    - key: "node.cloudprovider.kubernetes.io/uninitialized"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+manifests:
+  rawYaml:
+    - deploy/*.yaml
