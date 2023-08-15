@@ -3,7 +3,9 @@ on: [push]
 jobs:
   build_image:
     name: build image
-    runs-on: gcr.io/kaniko-project/executor:debug
+    runs-on: ubuntu-latest
+    container:
+        image: gcr.io/kaniko-project/executor:debug
     steps:
         - name: Check out the repo
           uses: actions/checkout@v3
