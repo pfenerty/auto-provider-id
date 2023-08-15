@@ -11,7 +11,7 @@ jobs:
           run: |
             pwd
             ls -alt
-        - uses: actions/download-artifact@master
+        - uses: actions/upload-artifact@master
           with:
             name: repo
             path: /home/runner/work/auto-provider-id/auto-provider-id
