@@ -26,6 +26,9 @@ jobs:
     steps: 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        env:
+          TRIVY_USERNAME: ${{ github.actor }}
+          TRIVY_PASSWORD: ${{ secrets.CI_TOKEN }}
         with:
           image-ref: ${{ needs.build_image.outputs.built_image_ref }}
           format: 'template'
