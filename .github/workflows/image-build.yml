@@ -11,15 +11,16 @@ jobs:
           run: |
             mkdir -p /kaniko/.docker
             echo "{\"auths\":{\"ghcr.io\":{\"username\":\"${{ github.actor }}\",\"password\":\"${{ secrets.CI_TOKEN }}\"}}}" > /kaniko/.docker/config.json
-            /kaniko/executor 
-              --destination=ghcr.io/${{ github.actor }}/auto-provider-id 
-              --context=git://${{ secrets.CI_TOKEN }}@github.com/${{ github.repository}}#${{ github.ref }}#${{ github.sha }}
+            /kaniko/executor \
+              --destination=ghcr.io/${{ github.actor }}/auto-provider-id \
+              --context=git://${{ secrets.CI_TOKEN }}@github.com/${{ github.repository}}#${{ github.ref }}#${{ github.sha }} \
               --image-name-with-digest-file image-ref.txt
             cat image-ref.txt
             echo "BUILT_IMAGE_REF=$(cat image-ref)" >> "$GITHUB_ENV"
   scan_image:
     name: CVE Scan
     runs-on: ubuntu-latest
+    needs: build_image
     steps: 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
