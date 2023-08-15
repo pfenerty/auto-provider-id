@@ -11,16 +11,20 @@ jobs:
           run: |
             pwd
             ls -alt
-        # - uses: actions/download-artifact@master
-        #   with:
-        #     name: repo
-        #     path: ./
+        - uses: actions/download-artifact@master
+          with:
+            name: repo
+            path: /home/runner/work/auto-provider-id/auto-provider-id
   build_image:
     name: Build Image
     runs-on: ubuntu-latest
     container:
         image: gcr.io/kaniko-project/executor:debug
     steps:
+        - uses: actions/download-artifact@master
+          with:
+            name: repo
+            path: /home/runner/work/auto-provider-id/auto-provider-id
         - name: Build the image
           run: |
             mkdir -p /kaniko/.docker
