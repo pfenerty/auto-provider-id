@@ -16,7 +16,7 @@ jobs:
               --context=git://${{ secrets.CI_TOKEN }}@github.com/${{ github.repository}}#${{ github.ref }}#${{ github.sha }} \
               --image-name-with-digest-file image-ref.txt
             cat image-ref.txt
-            echo "BUILT_IMAGE_REF=$(cat image-ref)" >> "$GITHUB_ENV"
+            echo "BUILT_IMAGE_REF=$(cat image-ref.txt)" >> "$GITHUB_ENV"
   scan_image:
     name: CVE Scan
     runs-on: ubuntu-latest
