@@ -1,0 +1,14 @@
+name: Image Build
+on: [push]
+jobs:
+  build_image:
+    name: build image
+    runs-on: gcr.io/kaniko-project/executor:debug
+    steps:
+        - name: Check out the repo
+          uses: actions/checkout@v3
+        - name: Build the image
+          run: |
+            mkdir -p /kaniko/.docker
+            echo "{\"auths\":{\"gchr.io\":{\"username\":\"${{ github.actor }}\",\"password\":\"${{ secrets.GITHUB_TOKEN }}\"}}}" > /kaniko/.docker/config.json
+            /kaniko/executor --destination  gchr.io/${{ github.actor }}/auto-provider-id
