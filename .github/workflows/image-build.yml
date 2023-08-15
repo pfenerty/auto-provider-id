@@ -11,5 +11,5 @@ jobs:
           run: |
             mkdir -p /kaniko/.docker
             echo "{\"auths\":{\"gchr.io\":{\"username\":\"${{ github.actor }}\",\"password\":\"${{ secrets.GITHUB_TOKEN }}\"}}}" > /kaniko/.docker/config.json
-            echo ${{ github.server_url}}/${{ github.repository}} ${{ github.sha }}
+            echo "https://${{secrets.GITHUB_TOKEN}}@github.com/${{ github.repository}}#${{ github.ref }}#${{ github.sha }}"
             # /kaniko/executor --destination  gchr.io/${{ github.actor }}/auto-provider-id
