@@ -7,8 +7,6 @@ jobs:
     container:
         image: gcr.io/kaniko-project/executor:debug
     steps:
-        - name: Check out the repo
-          uses: actions/checkout@v3
         - name: Build the image
           run: |
             mkdir -p /kaniko/.docker
