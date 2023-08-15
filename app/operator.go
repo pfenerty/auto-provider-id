@@ -29,6 +29,8 @@ func StartOperator(dryRunMode bool) {
 		panic(err.Error())
 	}
 
+	imageRef := getImageRef(clientset, os.Getenv("POD_NAMESPACE"), os.Getenv("POD_NAME"))
+
 	// Watch for new nodes
 	watchlist := cache.NewListWatchFromClient(
 		clientset.CoreV1().RESTClient(),
@@ -48,7 +50,7 @@ func StartOperator(dryRunMode bool) {
 				logEntry := logrus.WithFields(logrus.Fields{"node": node.Name})
 				logEntry.Infof("New node detected %s", node.Name)
 
-				err := updateNode(clientset, node, dryRunMode)
+				err := updateNode(clientset, imageRef, node, dryRunMode)
 				if err != nil && !errors.IsConflict(err) {
 					logEntry.Errorf("Failed start update job on node: %v", err)
 				} else {
@@ -65,7 +67,7 @@ func StartOperator(dryRunMode bool) {
 	select {}
 }
 
-func updateNode(clientset *kubernetes.Clientset, node *corev1.Node, dryRunMode bool) error {
+func updateNode(clientset *kubernetes.Clientset, imageRef string, node *corev1.Node, dryRunMode bool) error {
 	ctx := context.TODO()
 
 	logEntry := logrus.WithFields(logrus.Fields{"node": node.Name})
@@ -76,7 +78,7 @@ func updateNode(clientset *kubernetes.Clientset, node *corev1.Node, dryRunMode b
 		return err
 	}
 
-	args := []string{"update-node", "--node", node.Name}
+	args := []string{"--node", node.Name}
 	if dryRunMode {
 		args = append(args, "--dry-run")
 	}
@@ -112,10 +114,11 @@ func updateNode(clientset *kubernetes.Clientset, node *corev1.Node, dryRunMode b
 					},
 					Containers: []corev1.Container{
 						{
-							Name:    "updater",
-							Image:   "pfenerty/auto-provider-id:latest",
-							Command: []string{"/app"},
-							Args:    args,
+							Name:            "updater",
+							Image:           imageRef,
+							Command:         []string{"/app", "update-node"},
+							Args:            args,
+							ImagePullPolicy: "Always",
 							SecurityContext: &corev1.SecurityContext{
 								AllowPrivilegeEscalation: &[]bool{false}[0],
 								Capabilities: &corev1.Capabilities{
@@ -142,4 +145,22 @@ func updateNode(clientset *kubernetes.Clientset, node *corev1.Node, dryRunMode b
 
 	_, err = clientset.BatchV1().Jobs(namespace).Create(ctx, job, metav1.CreateOptions{})
 	return err
+}
+
+func getImageRef(clientset *kubernetes.Clientset, namespace string, podname string) string {
+	for {
+		pod, err := clientset.CoreV1().Pods(namespace).Get(
+			context.TODO(), podname, metav1.GetOptions{},
+		)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		if pod.Status.ContainerStatuses[0].ImageID != "" {
+			logrus.Infof("Using Image: %s", pod.Status.ContainerStatuses[0].ImageID)
+			return pod.Status.ContainerStatuses[0].ImageID
+		}
+		logrus.Infof("Blank ImageID, trying again in 10 seconds")
+		time.Sleep(10 * time.Second)
+	}
 }

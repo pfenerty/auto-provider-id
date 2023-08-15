@@ -7,6 +7,8 @@ build:
     - image: pfenerty/auto-provider-id
       kaniko:
         dockerfile: Dockerfile
+      # docker:
+      #   dockerfile: Dockerfile
   cluster:
     dockerConfig:
       secretName: build-secret

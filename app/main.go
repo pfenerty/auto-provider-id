@@ -27,7 +27,7 @@ func main() {
 		Use:   "update-node",
 		Short: "Update Node with Provider ID from AWS metadata",
 		Run: func(cmd *cobra.Command, args []string) {
-			UpdatNode(nodeName, dryRun)
+			UpdateNode(nodeName, dryRun)
 		},
 	}
 
