@@ -8,6 +8,7 @@ jobs:
         image: gcr.io/kaniko-project/executor:debug
     steps:
         - name: Build the image
+          id: build_image
           run: |
             mkdir -p /kaniko/.docker
             echo "{\"auths\":{\"ghcr.io\":{\"username\":\"${{ github.actor }}\",\"password\":\"${{ secrets.CI_TOKEN }}\"}}}" > /kaniko/.docker/config.json
@@ -15,7 +16,9 @@ jobs:
               --destination=ghcr.io/${{ github.actor }}/auto-provider-id \
               --context=git://${{ secrets.CI_TOKEN }}@github.com/${{ github.repository}}#${{ github.ref }}#${{ github.sha }} \
               --image-name-with-digest-file image-ref.txt
-            echo "BUILT_IMAGE_REF=$(cat image-ref.txt)" >> "$GITHUB_OUTPUT"
+            echo "build_image_ref=$(cat image-ref.txt)" >> "$GITHUB_OUTPUT"
+    outputs:
+      built_image_ref: ${{ steps.build_image.outputs.build_image_ref }}
   scan_image:
     name: CVE Scan
     runs-on: ubuntu-latest
@@ -24,7 +27,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
         with:
-          image-ref: ${{ needs.build_image.outputs.BUILT_IMAGE_REF }}
+          image-ref: ${{ needs.build_image.outputs.built_image_ref }}
           format: 'template'
           template: '@/contrib/sarif.tpl'
           output: 'trivy-results.sarif'
