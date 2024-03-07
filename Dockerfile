@@ -10,6 +10,7 @@
 
 # RUN CGO_ENABLED=0 go build -o /go/bin/app
 
-FROM gcr.io/distroless/static-debian11:nonroot
+# FROM gcr.io/distroless/static-debian11:nonroot
 # COPY --from=build /go/bin/app /
 # CMD ["/app"]
+FROM scratch
