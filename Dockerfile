@@ -1,15 +1,15 @@
 FROM golang:1.20 as build
 
-# WORKDIR /go/src/app
+WORKDIR /go/src/app
 
-# COPY app/go.mod app/go.sum ./
+COPY app/go.mod app/go.sum ./
 
-# RUN go mod download
+RUN go mod download
 
-# COPY app/*.go ./
+COPY app/*.go ./
 
-# RUN CGO_ENABLED=0 go build -o /go/bin/app
+RUN CGO_ENABLED=0 go build -o /go/bin/app
 
-# FROM gcr.io/distroless/static-debian11:nonroot
-# COPY --from=build /go/bin/app /
-# CMD ["/app"]
+FROM gcr.io/distroless/static-debian11:nonroot
+COPY --from=build /go/bin/app /
+CMD ["/app"]
