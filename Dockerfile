@@ -1,4 +1,4 @@
-# FROM golang:1.20 as build
+FROM golang:1.20 as build
 
 # WORKDIR /go/src/app
 
@@ -13,4 +13,3 @@
 # FROM gcr.io/distroless/static-debian11:nonroot
 # COPY --from=build /go/bin/app /
 # CMD ["/app"]
-FROM scratch
