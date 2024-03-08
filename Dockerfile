@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/go-toolset:1.20.12-2 as build
+FROM ubuntu:20.04 as build
 
 # WORKDIR /go/src/app
 
