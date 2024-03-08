@@ -1,4 +1,4 @@
-FROM golang:1.20 as build
+FROM registry.access.redhat.com/ubi8/go-toolset:1.20.12-2 as build
 
 # WORKDIR /go/src/app
 
