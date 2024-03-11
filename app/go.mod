@@ -3,7 +3,7 @@ module github.com/pfenerty/auto-provider-id
 go 1.20
 
 require (
-	github.com/aws/aws-sdk-go v1.44.315
+	github.com/aws/aws-sdk-go v1.50.35
 	github.com/google/uuid v1.3.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.7.0
