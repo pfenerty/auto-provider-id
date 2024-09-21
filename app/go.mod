@@ -1,8 +1,8 @@
 module github.com/pfenerty/auto-provider-id
 
-go 1.21
+go 1.23
 
-toolchain go1.22.1
+toolchain go1.23.0
 
 require (
 	github.com/aws/aws-sdk-go v1.51.1

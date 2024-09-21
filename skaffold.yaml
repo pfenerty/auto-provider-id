@@ -11,7 +11,7 @@ build:
       #   dockerfile: Dockerfile
   cluster:
     dockerConfig:
-      secretName: build-secret
+      secretName: docker-hub-creds
     namespace: skaffold-builds
     tolerations:
     - key: "node.cloudprovider.kubernetes.io/uninitialized"
