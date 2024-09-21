@@ -19,7 +19,7 @@ spec:
       containers:
       - name: operator
         image: pfenerty/auto-provider-id
-        command: ["/app"]
+        command: ["/ko-app/auto-provider-id"]
         args: ["operator"]
         env:
           - name: POD_NAMESPACE

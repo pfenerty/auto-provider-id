@@ -116,7 +116,7 @@ func updateNode(clientset *kubernetes.Clientset, imageRef string, node *corev1.N
 						{
 							Name:            "updater",
 							Image:           imageRef,
-							Command:         []string{"/app", "update-node"},
+							Command:         []string{"/ko-app/auto-provider-id", "update-node"},
 							Args:            args,
 							ImagePullPolicy: "Always",
 							SecurityContext: &corev1.SecurityContext{
