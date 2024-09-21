@@ -3,21 +3,32 @@ kind: Config
 metadata:
   name: auto-provider-id
 build:
+  platforms:
+    - "linux/amd64"
+    - "linux/arm64"
   artifacts:
     - image: pfenerty/auto-provider-id
-      kaniko:
-        dockerfile: Dockerfile
+#      kaniko:
+#        dockerfile: Dockerfile
+      ko:
+        dir: ./app
+        main: ./
+        dependencies:
+          paths:
+            - "app/*.go"
+            - "app/go.*"
+        fromImage: cgr.dev/chainguard/glibc-dynamic:latest
       # docker:
       #   dockerfile: Dockerfile
-  cluster:
-    dockerConfig:
-      secretName: docker-hub-creds
-    namespace: skaffold-builds
-    tolerations:
-    - key: "node.cloudprovider.kubernetes.io/uninitialized"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+#  cluster:
+#    dockerConfig:
+#      secretName: docker-hub-creds
+#    namespace: skaffold-builds
+#    tolerations:
+#    - key: "node.cloudprovider.kubernetes.io/uninitialized"
+#      operator: "Equal"
+#      value: "true"
+#      effect: "NoSchedule"
 manifests:
   rawYaml:
     - deploy/*.yaml
